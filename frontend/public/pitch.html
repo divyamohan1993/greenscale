@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GreenScale - pitch</title>
+<meta name="description" content="GreenScale pitch deck. Use arrow keys to navigate." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/pitch.css?v=1" />
+</head>
+<body>
+<a class="nav-link" href="/">&larr; back to dashboard</a>
+<div class="nav-hint">← / → arrow keys &nbsp;·&nbsp; press <b>F</b> to fullscreen</div>
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: TITLE -->
+  <section class="slide active">
+    <p class="eyebrow">Capstone Project · 2026</p>
+    <h1 class="title">Green<em>Scale</em></h1>
+    <h3 class="subhead">A carbon, cold-start, latency and cost aware routing plane for multi-region serverless.</h3>
+    <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;">
+      <div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--gray);">presented by</div>
+        <div style="font-family:var(--serif);font-size:28px;font-weight:600;margin-top:4px;">Anshuman Mohanty</div>
+        <div style="font-size:14px;color:var(--gray);margin-top:2px;">B.Tech CSE · Cloud Computing · GF202217744</div>
+        <div style="font-size:14px;color:var(--gray);">mentor: Mr. Ashish · Shoolini University</div>
+      </div>
+      <div style="text-align:right;">
+        <span class="tag">live demo at greenscale.run</span>
+      </div>
+    </div>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">01</div>
+  </section>
+
+  <!-- SLIDE 2: THE STATE OF SERVERLESS ROUTING -->
+  <section class="slide">
+    <p class="eyebrow">where we are today</p>
+    <h2 class="head">Serverless routing is one-dimensional.</h2>
+    <p class="body">Every production load balancer, from <span class="kicker">Google Cloud LB</span> to <span class="kicker">AWS Latency-Based Routing</span> to <span class="kicker">Cloudflare Argo</span>, picks the closest region by round-trip time. Three other variables that move the cost and externalities of a request by an order of magnitude are <b>invisible</b>:</p>
+    <ul class="body">
+      <li><b>Grid carbon intensity</b> — varies 5×–10× across regions any moment of the day.</li>
+      <li><b>Cold-start probability</b> — a cold region adds 200–1500 ms before the first byte.</li>
+      <li><b>Hourly cost</b> — region pricing differs 10–15%; non-trivial at SME scale.</li>
+    </ul>
+    <p class="body" style="margin-top:24px;">A routing system that ignores three of its four most important inputs is not an optimum. It is a default.</p>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">02</div>
+  </section>
+
+  <!-- SLIDE 3: THE GAP IN RESEARCH -->
+  <section class="slide">
+    <p class="eyebrow">what the latest papers do — and don't do</p>
+    <h2 class="head">Two specific gaps remain open.</h2>
+    <div class="compare">
+      <div>
+        <h4>Recent state of the art (2025–2026)</h4>
+        <ul>
+          <li><b>LACE-RL</b> (Feb 2026) — RL keep-alive tuning. <em>Single region.</em></li>
+          <li><b>Aceso</b> (Mar 2026) — carbon-aware placement. <em>Design-time.</em></li>
+          <li><b>Spatio-Temporal Shifting</b> (Dec 2025). <em>Batch only.</em></li>
+          <li><b>Green-by-Design</b> (Feb 2026). <em>Constraint solver, not runtime.</em></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Open gaps</h4>
+        <ul>
+          <li><b>Gap 1.</b> No <em>per-request</em>, <em>multi-region</em>, runtime routing layer that <em>jointly</em> optimizes carbon, cold-start, latency and cost.</li>
+          <li><b>Gap 2.</b> Existing solutions are research prototypes — not <em>deployable</em>, <em>transparent</em> middleware that an SME can adopt without rebuilding the platform.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">03</div>
+  </section>
+
+  <!-- SLIDE 4: SOLUTION -->
+  <section class="slide">
+    <p class="eyebrow">the proposal</p>
+    <h2 class="head">A transparent routing plane in front of any serverless deployment.</h2>
+    <p class="body">For every request, GreenScale computes a per-region score:</p>
+    <div class="archfig" style="text-align:center;">
+score(r) = w_lat·latency(r) + w_carbon·CI(r) + w_cold·P_cold(r) + w_cost·cost(r)
+chosen = argmin<sub>r</sub> score(r)
+    </div>
+    <ul class="body" style="margin-top:24px;">
+      <li><b>Linear &amp; transparent</b> — every weight, every score is logged. Auditable for CSRD and India BRSR.</li>
+      <li><b>Provider-agnostic</b> — runs as a Cloud Run service in front of any HTTP serverless backend. No platform changes.</li>
+      <li><b>Re-tunable at request time</b> — operators can shift the carbon/latency trade-off live, no deploy.</li>
+    </ul>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">04</div>
+  </section>
+
+  <!-- SLIDE 5: ARCHITECTURE -->
+  <section class="slide">
+    <p class="eyebrow">architecture</p>
+    <h2 class="head">Three Cloud Run services. Zero idle cost.</h2>
+    <div class="archfig">
+                        ┌──────────────────────────┐
+                        │      User browser        │
+                        └────────────┬─────────────┘
+                                     │ HTTPS
+                                     ▼
+                        ┌──────────────────────────┐
+   /, /pitch, /report ◄─┤  greenscale-frontend     │  nginx static
+                        │  Cloud Run · min=0       │
+                        └────────────┬─────────────┘
+                          /api/*  reverse-proxy
+                                     ▼
+                        ┌──────────────────────────┐
+   /v1/route            │  greenscale-backend      │  FastAPI · 200-line scorer
+   /v1/regions          │  Cloud Run · min=0       │
+   /v1/decisions        └────────────┬─────────────┘
+                                     ▼
+                        ┌──────────────────────────┐
+   POST /decisions      │  greenscale-db           │  SQLite + GCS round-trip
+   GET  /decisions      │  Cloud Run · min=0       │  RPO ≤ 30s
+                        └────────────┬─────────────┘
+                                     ▼
+                              gs://greenscale-state
+    </div>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">05</div>
+  </section>
+
+  <!-- SLIDE 6: HEADLINE NUMBERS -->
+  <section class="slide">
+    <p class="eyebrow">the result</p>
+    <h2 class="head">Up to 87% less carbon. Under 50ms median overhead.</h2>
+    <p class="body">500-request synthetic benchmark, 12 user locations across 3 continents, full 24-hour UTC carbon cycle.</p>
+    <div class="numbers">
+      <div>
+        <div class="n-val">87%</div>
+        <div class="n-lab">peak operational carbon reduction vs latency-only routing (worst-case region)</div>
+      </div>
+      <div>
+        <div class="n-val">38<span style="font-size:60%;">ms</span></div>
+        <div class="n-lab">mean latency overhead. P95 = 142 ms.</div>
+      </div>
+      <div>
+        <div class="n-val">67%</div>
+        <div class="n-lab">reroute rate — chose a greener region than latency-only would.</div>
+      </div>
+      <div>
+        <div class="n-val">₹0</div>
+        <div class="n-lab">idle cost. min-instances=0 across all three services.</div>
+      </div>
+      <div>
+        <div class="n-val">~80<span style="font-size:60%;">ms</span></div>
+        <div class="n-lab">end-to-end warm round trip.</div>
+      </div>
+      <div>
+        <div class="n-val">200</div>
+        <div class="n-lab">lines of routing code. Zero ML black box.</div>
+      </div>
+    </div>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">06</div>
+  </section>
+
+  <!-- SLIDE 7: STATE OF THE ART COMPARISON -->
+  <section class="slide">
+    <p class="eyebrow">vs. the published state of the art</p>
+    <h2 class="head">Complementary, not competitive.</h2>
+    <table style="width:100%;font-family:var(--sans);font-size:16px;border-collapse:collapse;margin-top:14px;">
+      <thead style="font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;">
+        <tr style="border-bottom:1px solid var(--rule);">
+          <th style="text-align:left;padding:10px 8px;">property</th>
+          <th>LACE-RL</th>
+          <th>Aceso</th>
+          <th>Green-by-Design</th>
+          <th style="color:var(--green);">GreenScale</th>
+        </tr>
+      </thead>
+      <tbody style="font-family:var(--serif);font-size:17px;">
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:10px 8px;">per-request</td><td>—</td><td>—</td><td>—</td><td style="color:var(--green);font-weight:700;">✓</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:10px 8px;">multi-region</td><td>—</td><td>partial</td><td>—</td><td style="color:var(--green);font-weight:700;">✓</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:10px 8px;">runtime (not design-time)</td><td>✓</td><td>—</td><td>—</td><td style="color:var(--green);font-weight:700;">✓</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:10px 8px;">transparent / auditable</td><td>RL black-box</td><td>heuristic</td><td>constraint</td><td style="color:var(--green);font-weight:700;">linear, logged</td></tr>
+        <tr style="border-bottom:1px solid var(--rule);"><td style="padding:10px 8px;">drop-in (no platform mod)</td><td>—</td><td>—</td><td>—</td><td style="color:var(--green);font-weight:700;">✓</td></tr>
+        <tr><td style="padding:10px 8px;">all four signals</td><td>cold + carbon</td><td>carbon + cost</td><td>carbon + constraints</td><td style="color:var(--green);font-weight:700;">✓ all four</td></tr>
+      </tbody>
+    </table>
+    <p class="body" style="margin-top:18px;font-size:18px;color:var(--gray);">LACE-RL inside each region <span style="color:var(--ink);font-weight:600;">+ GreenScale across regions</span> is the right production stack.</p>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">07</div>
+  </section>
+
+  <!-- SLIDE 8: WHY THIS MATTERS -->
+  <section class="slide">
+    <p class="eyebrow">why now, why for SMEs</p>
+    <h2 class="head">CSRD &amp; India BRSR are turning carbon into a compliance line.</h2>
+    <div class="fact-list">
+      <div class="fact"><div class="f-key">2025</div><div class="f-val">India SEBI mandates BRSR Core for top 1000 listed companies. Scope-2 cloud carbon is in scope.</div></div>
+      <div class="fact"><div class="f-key">2025</div><div class="f-val">EU Corporate Sustainability Reporting Directive expands to ~50 000 firms. Scope-2 reporting required.</div></div>
+      <div class="fact"><div class="f-key">2026+</div><div class="f-val">SMEs in supplier chains will inherit the requirement. Most run on managed serverless and have <em>no path</em> to adopt platform-internal carbon schedulers.</div></div>
+    </div>
+    <p class="body" style="margin-top:24px;font-size:21px;"><b>GreenScale is the drop-in path.</b> Three Cloud Run services, install in 10 minutes, full audit trail, no platform changes.</p>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">08</div>
+  </section>
+
+  <!-- SLIDE 9: ROADMAP -->
+  <section class="slide">
+    <p class="eyebrow">what's next</p>
+    <h2 class="head">From capstone to product.</h2>
+    <ol class="body">
+      <li><b>Live carbon API.</b> ElectricityMap or WattTime per-region 5-minute resolution.</li>
+      <li><b>SDK.</b> <span class="kicker">@greenscale.route()</span> decorator on existing Cloud Run handlers — adoption in two lines.</li>
+      <li><b>Hosted control plane.</b> Multi-tenant, billed per million decisions.</li>
+      <li><b>Compliance exports.</b> CSRD + BRSR-aligned CSV from the audit table.</li>
+      <li><b>Multi-cloud.</b> AWS Lambda &amp; Azure Container Apps adapters.</li>
+    </ol>
+    <p class="body" style="margin-top:14px;font-size:19px;color:var(--gray);">Capstone today &nbsp;·&nbsp; production-grade middleware in 9 months &nbsp;·&nbsp; the default sustainability layer for managed serverless.</p>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">09</div>
+  </section>
+
+  <!-- SLIDE 10: THANK YOU -->
+  <section class="slide">
+    <p class="eyebrow">thank you</p>
+    <h2 class="head" style="font-size:clamp(40px,5vw,72px);">Questions?</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:auto;">
+      <div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--gray);">Live demo</div>
+        <div style="font-family:var(--serif);font-size:24px;font-weight:600;margin-top:4px;">greenscale &mdash; on Cloud Run</div>
+        <div style="font-size:14px;color:var(--gray);margin-top:2px;">/ for dashboard · /pitch for these slides · /report for the full report</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--mono);font-size:12px;color:var(--gray);">Anshuman Mohanty</div>
+        <div style="font-family:var(--serif);font-size:24px;font-weight:600;margin-top:4px;">B.Tech CSE · Cloud Computing</div>
+        <div style="font-size:14px;color:var(--gray);margin-top:2px;">GF202217744 · mentor Mr. Ashish</div>
+        <div style="font-size:14px;color:var(--gray);">Shoolini University · Solan, H.P.</div>
+      </div>
+    </div>
+    <div class="slide-brand"><div class="slide-brand-logo">G</div>greenscale</div>
+    <div class="slide-num">10</div>
+  </section>
+
+</div>
+
+<script>
+'use strict';
+(function() {
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const total = slides.length;
+    const progress = document.getElementById('progress');
+    let idx = 0;
+
+    function show(i) {
+        idx = Math.max(0, Math.min(total - 1, i));
+        slides.forEach((s, j) => {
+            s.classList.toggle('active', j === idx);
+            s.classList.toggle('prev',   j <  idx);
+        });
+        progress.style.width = ((idx + 1) / total * 100) + '%';
+        const u = new URL(location.href);
+        u.hash = '#' + (idx + 1);
+        history.replaceState({}, '', u);
+    }
+
+    function next() { show(idx + 1); }
+    function prev() { show(idx - 1); }
+
+    document.addEventListener('keydown', e => {
+        if (['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+        switch (e.key) {
+            case 'ArrowRight': case 'PageDown': case ' ':           next(); e.preventDefault(); break;
+            case 'ArrowLeft':  case 'PageUp':                       prev(); e.preventDefault(); break;
+            case 'Home':                                            show(0); break;
+            case 'End':                                             show(total - 1); break;
+            case 'f': case 'F':
+                if (document.fullscreenElement) document.exitFullscreen();
+                else document.documentElement.requestFullscreen().catch(() => {});
+                break;
+        }
+        if (e.key >= '0' && e.key <= '9') {
+            const n = e.key === '0' ? 9 : parseInt(e.key, 10) - 1;
+            if (n < total) show(n);
+        }
+    });
+
+    let touchStart = null;
+    document.addEventListener('touchstart', e => { touchStart = e.touches[0].clientX; }, {passive:true});
+    document.addEventListener('touchend', e => {
+        if (touchStart === null) return;
+        const dx = e.changedTouches[0].clientX - touchStart;
+        if (Math.abs(dx) > 50) (dx < 0 ? next : prev)();
+        touchStart = null;
+    });
+
+    document.addEventListener('click', e => {
+        if (e.target.closest('a,button,input,select')) return;
+        const half = window.innerWidth / 2;
+        (e.clientX > half ? next : prev)();
+    });
+
+    if (location.hash) {
+        const n = parseInt(location.hash.slice(1), 10);
+        if (Number.isInteger(n) && n >= 1 && n <= total) show(n - 1);
+    } else {
+        show(0);
+    }
+})();
+</script>
+</body>
+</html>

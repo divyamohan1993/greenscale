@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GreenScale - live routing dashboard</title>
+<meta name="description" content="GreenScale: a carbon, cold-start, latency and cost aware routing plane for multi-region serverless. Capstone project of Anshuman Mohanty, B.Tech CSE Cloud Computing." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="/css/styles.css?v=1" />
+</head>
+<body>
+<header class="gs-header">
+  <div class="gs-brand">
+    <div class="gs-brand-logo">G</div>
+    <div>GreenScale</div>
+    <div class="gs-brand-tag">carbon-aware serverless routing</div>
+  </div>
+  <nav class="gs-nav">
+    <a href="/" class="active">Dashboard</a>
+    <a href="/pitch">Pitch</a>
+    <a href="/report">Report</a>
+  </nav>
+</header>
+
+<main class="gs-main">
+  <section>
+    <div class="gs-stats" id="stats">
+      <div class="stat"><div class="stat-label">Total decisions</div><div class="stat-value" id="s-total">0</div><div class="stat-sub">since first deploy</div></div>
+      <div class="stat"><div class="stat-label">CO2 saved</div><div class="stat-value accent-green" id="s-saved">0.000 g</div><div class="stat-sub">vs latency-only baseline</div></div>
+      <div class="stat"><div class="stat-label">Reroutes</div><div class="stat-value" id="s-reroutes">0</div><div class="stat-sub">chose greener over closest</div></div>
+      <div class="stat"><div class="stat-label">Median latency overhead</div><div class="stat-value accent-amber" id="s-overhead">0 ms</div><div class="stat-sub">price of being green</div></div>
+    </div>
+
+    <div class="card gs-map-wrap">
+      <div class="card-header">
+        <div>
+          <div class="card-title"><span class="live-dot"></span>Region map - live</div>
+          <div class="card-subtitle">colour shows current grid carbon intensity (gCO<sub>2</sub>eq/kWh)</div>
+        </div>
+      </div>
+      <div id="map"></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Carbon intensity by region (now)</div></div>
+        <div class="card-body chart-wrap"><canvas id="chart-ci"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Score breakdown - last decision</div></div>
+        <div class="card-body chart-wrap"><canvas id="chart-score"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <aside>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Send a routed request</div></div>
+      <div class="card-body">
+        <div class="demo-controls">
+          <div class="demo-row">
+            <input id="lat" type="number" step="0.0001" value="19.0760" />
+            <input id="lon" type="number" step="0.0001" value="72.8777" />
+          </div>
+          <div class="demo-presets">
+            <button data-lat="19.0760" data-lon="72.8777">Mumbai</button>
+            <button data-lat="28.6139" data-lon="77.2090">Delhi</button>
+            <button data-lat="13.0827" data-lon="80.2707">Chennai</button>
+            <button data-lat="51.5074" data-lon="-0.1278">London</button>
+            <button data-lat="40.7128" data-lon="-74.0060">New York</button>
+            <button data-lat="-33.8688" data-lon="151.2093">Sydney</button>
+          </div>
+          <div class="weights">
+            <div class="weight"><label>latency</label><input id="w-lat"    type="range" min="0" max="1" step="0.05" value="0.25"><span class="v" id="wv-lat">0.25</span></div>
+            <div class="weight"><label>carbon</label><input id="w-carbon" type="range" min="0" max="1" step="0.05" value="0.45"><span class="v" id="wv-carbon">0.45</span></div>
+            <div class="weight"><label>cold-start</label><input id="w-cold" type="range" min="0" max="1" step="0.05" value="0.20"><span class="v" id="wv-cold">0.20</span></div>
+            <div class="weight"><label>cost</label><input id="w-cost"     type="range" min="0" max="1" step="0.05" value="0.10"><span class="v" id="wv-cost">0.10</span></div>
+          </div>
+          <button id="btn-go" class="btn">Route a request</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header">
+        <div class="card-title"><span class="live-dot"></span>Region snapshot</div>
+        <div class="card-subtitle"><span id="ts-regions">-</span></div>
+      </div>
+      <div class="card-body">
+        <div class="region-list" id="region-list"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header"><div class="card-title">Recent routing decisions</div></div>
+      <div class="card-body decisions" id="decisions"></div>
+    </div>
+  </aside>
+</main>
+
+<div id="toast" class="toast"></div>
+
+<footer class="gs-footer">
+  GreenScale capstone - Anshuman Mohanty - GF202217744 - B.Tech CSE (Cloud Computing) - Mentor: Mr. Ashish.
+  Three Cloud Run services, min-instances=0, zero idle cost.
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="/js/app.js?v=1"></script>
+</body>
+</html>

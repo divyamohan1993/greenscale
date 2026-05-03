@@ -1,0 +1,26 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# editor
+.vscode/
+.idea/
+.DS_Store
+
+# os
+Thumbs.db
+
+# build/transient
+*.log
+/tmp/
+.cache/
+
+# never commit local DBs
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+data/
