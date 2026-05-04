@@ -1,13 +1,13 @@
 {
   "title": "GreenScale: A Carbon, Cold-Start, Latency and Cost Aware Routing Plane for Multi-Region Serverless",
-  "student_name": "Anshuman Mohanty",
-  "reg_no": "GF202217744",
+  "student_name": "Tarun Kumar",
+  "reg_no": "GF202214708",
   "course": "B.Tech CSE (Cloud Computing)",
   "semester": "Capstone",
-  "mentor": "Mr. Ashish",
+  "mentor": "Ms. Ishani Sharma",
 
   "acknowledgement": [
-    "I am grateful to my mentor, Mr. Ashish, for guidance through every checkpoint of this capstone, and to the faculty of the Yogananda School of AI, Computers and Data Sciences at Shoolini University for providing the academic environment in which this work was conceived.",
+    "I am grateful to my mentor, Ms. Ishani Sharma, for guidance through every checkpoint of this capstone, and to the faculty of the Yogananda School of AI, Computers and Data Sciences at Shoolini University for providing the academic environment in which this work was conceived.",
     "I thank the open-source community whose work on FastAPI, SQLite, Litestream, nginx, Leaflet, Chart.js and Google Cloud Run made it possible to deliver a production-grade demonstrator on a student budget. I also thank the authors of the LACE-RL, Aceso and Cold-Start Anti-Patterns papers (2025-2026) whose findings directly motivated the gaps this project addresses.",
     "Finally, I thank my family for their patience and unwavering support during the long nights this project demanded."
   ],

@@ -1,6 +1,6 @@
 # GreenScale
 
-A carbon, cold-start, latency and cost aware routing plane for multi-region serverless. Capstone project of **Anshuman Mohanty** (B.Tech CSE Cloud Computing, GF202217744). Mentor: Mr. Ashish, Shoolini University.
+A carbon, cold-start, latency and cost aware routing plane for multi-region serverless. Capstone project of **Tarun Kumar** (B.Tech CSE Cloud Computing, GF202214708). Mentor: Ms. Ishani Sharma, Shoolini University.
 
 For the research framing, see [`docs/research-gaps.md`](docs/research-gaps.md). For the system design, see [`ARCHITECTURE.md`](ARCHITECTURE.md). For the full report, run the system and visit `/report`.
 

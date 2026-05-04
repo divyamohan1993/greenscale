@@ -109,8 +109,8 @@ def main():
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>GreenScale - Capstone Report - Anshuman Mohanty</title>
-<meta name="description" content="Full capstone project report for GreenScale, by Anshuman Mohanty (B.Tech CSE Cloud Computing, GF202217744). Mirrors the university-supplied docx template; downloadable as docx." />
+<title>GreenScale - Capstone Report - {esc(c['student_name'])}</title>
+<meta name="description" content="Full capstone project report for GreenScale, by {esc(c['student_name'])} ({esc(c['course'])}, {esc(c['reg_no'])}). Mirrors the university-supplied docx template; downloadable as docx." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
